@@ -12,6 +12,7 @@ export const App = () => {
   const [error, setError] = useState('');
   const [isCheckValue, setIsCheckValue] = useState(false);
   const [totalTime, setTotalTime] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   const onChangeDetailValue = (event) => setDetail(event.target.value);
   const onChangeTimeValue = (event) => setTime(event.target.value);
@@ -30,19 +31,30 @@ export const App = () => {
     setTime('');
     setTotalTime(parseInt(totalTime) + parseInt(time));
   };
+  const getStudyLog = async () => {
+    const studyLogs = await getAllStudyLog();
+    setRecords(studyLogs);
+
+    const sum = studyLogs.reduce((acc, record) => acc + parseInt(record.time || 0), 0);
+    setTotalTime(sum);
+
+    setIsLoading(false);
+  };
   useEffect(() => {
-    const getStudyLog = async () => {
-      const studyLog = await getAllStudyLog();
-      setRecords(studyLog);
-      console.log(studyLog);
-    };
     getStudyLog();
   }, []);
+
   return (
     <>
       <Inputform detail={detail} time={time} onChangeDetailValue={onChangeDetailValue} onChangeTimeValue={onChangeTimeValue} onClickRegistration={onClickRegistration} isCheckValue={isCheckValue} error={error} totalTime={totalTime} />
-      <Archive records={records} />
-      <Total totalTime={totalTime} />
+      {isLoading ? (
+        <h1>ロード中</h1>
+      ) : (
+        <>
+          <Archive records={records} />
+          <Total totalTime={totalTime} />
+        </>
+      )}
     </>
   );
 };
