@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import { Archive } from './components/Archive';
 import { Inputform } from './components/Inputform';
 import { Total } from './components/Total';
+import { getAllStudyLog } from '../utils/supabaseFunctions/supabaseFunctions';
+
 export const App = () => {
   const [records, setRecords] = useState([]);
-
   const [detail, setDetail] = useState('');
   const [time, setTime] = useState(0);
   const [error, setError] = useState('');
@@ -29,7 +30,14 @@ export const App = () => {
     setTime('');
     setTotalTime(parseInt(totalTime) + parseInt(time));
   };
-
+  useEffect(() => {
+    const getStudyLog = async () => {
+      const studyLog = await getAllStudyLog();
+      setRecords(studyLog);
+      console.log(studyLog);
+    };
+    getStudyLog();
+  }, []);
   return (
     <>
       <Inputform detail={detail} time={time} onChangeDetailValue={onChangeDetailValue} onChangeTimeValue={onChangeTimeValue} onClickRegistration={onClickRegistration} isCheckValue={isCheckValue} error={error} totalTime={totalTime} />
