@@ -55,6 +55,27 @@ export const App = () => {
     await DeleteStudyLog(recordId);
   };
 
+  const getStudyLog = async () => {
+    const studyLogs = await getAllStudyLog();
+    setRecords(studyLogs);
+
+    const sum = studyLogs.reduce((acc, record) => acc + parseInt(record.time || 0), 0);
+    setTotalTime(sum);
+
+    setIsLoading(false);
+  };
+
+  const onClickDeleteRecord = async (recordId) => {
+    setRecords((prev) => prev.filter((r) => r.id !== recordId));
+
+    setTotalTime((prev) => {
+      const target = records.find((record) => record.id === recordId);
+      return target ? prev - Number(target.time || 0) : prev;
+    });
+
+    await DeleteStudyLog(recordId);
+  };
+
   useEffect(() => {
     getStudyLog();
   }, []);
@@ -63,7 +84,7 @@ export const App = () => {
     <>
       <Inputform detail={detail} time={time} onChangeDetailValue={onChangeDetailValue} onChangeTimeValue={onChangeTimeValue} onClickRegistration={onClickRegistration} isCheckValue={isCheckValue} error={error} totalTime={totalTime} />
       {isLoading ? (
-        <h1>ロード中</h1>
+        <h1>ロード中です！</h1>
       ) : (
         <>
           <Archive records={records} onClick={onClickDeleteRecord} />
