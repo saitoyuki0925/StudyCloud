@@ -3,7 +3,7 @@ import './App.css';
 import { Archive } from './components/Archive';
 import { Inputform } from './components/Inputform';
 import { Total } from './components/Total';
-import { getAllStudyLog } from '../utils/supabaseFunctions/supabaseFunctions';
+import { addStudyLog, DeleteStudyLog, getAllStudyLog } from '../utils/supabaseFunctions/supabaseFunctions';
 
 export const App = () => {
   const [records, setRecords] = useState([]);
@@ -16,7 +16,7 @@ export const App = () => {
 
   const onChangeDetailValue = (event) => setDetail(event.target.value);
   const onChangeTimeValue = (event) => setTime(event.target.value);
-  const onClickRegistration = () => {
+  const onClickRegistration = async () => {
     if (detail === '' || time === '' || time === '0') {
       setError('入力項目が正しくありません');
       setIsCheckValue(true);
@@ -24,13 +24,15 @@ export const App = () => {
     } else {
       setIsCheckValue(false);
     }
-    const newRecord = { title: detail, time };
-    const newRecords = [...records, newRecord];
-    setRecords(newRecords);
+    const timeNum = Number(time);
+    const newRecord = await addStudyLog(detail, timeNum);
+    setRecords((prev) => [...prev, newRecord]);
+
     setDetail('');
     setTime('');
-    setTotalTime(parseInt(totalTime) + parseInt(time));
+    setTotalTime(parseInt(totalTime) + parseInt(timeNum));
   };
+
   const getStudyLog = async () => {
     const studyLogs = await getAllStudyLog();
     setRecords(studyLogs);
@@ -40,6 +42,19 @@ export const App = () => {
 
     setIsLoading(false);
   };
+
+  // ここ質問したい。
+  const onClickDeleteRecord = async (recordId) => {
+    setRecords((prev) => prev.filter((r) => r.id !== recordId));
+
+    setTotalTime((prev) => {
+      const target = records.find((record) => record.id === recordId);
+      return target ? prev - Number(target.time || 0) : prev;
+    });
+
+    await DeleteStudyLog(recordId);
+  };
+
   useEffect(() => {
     getStudyLog();
   }, []);
@@ -51,7 +66,7 @@ export const App = () => {
         <h1>ロード中</h1>
       ) : (
         <>
-          <Archive records={records} />
+          <Archive records={records} onClick={onClickDeleteRecord} />
           <Total totalTime={totalTime} />
         </>
       )}
