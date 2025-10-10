@@ -30,13 +30,6 @@ export const App = () => {
     setTotalTime(parseInt(totalTime) + parseInt(time));
   };
 
-<<<<<<< Updated upstream
-  return (
-    <>
-      <Inputform detail={detail} time={time} onChangeDetailValue={onChangeDetailValue} onChangeTimeValue={onChangeTimeValue} onClickRegistration={onClickRegistration} isCheckValue={isCheckValue} error={error} totalTime={totalTime} />
-      <Archive records={records} />
-      <Total totalTime={totalTime} />
-=======
   const getStudyLog = async () => {
     const studyLogs = await getAllStudyLog();
     setRecords(studyLogs);
@@ -73,7 +66,6 @@ export const App = () => {
           <Total totalTime={totalTime} />
         </>
       )}
->>>>>>> Stashed changes
     </>
   );
 };
