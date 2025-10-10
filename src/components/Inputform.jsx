@@ -1,5 +1,8 @@
-export const Inputform = (props) => {
+import { memo } from 'react';
+
+export const Inputform = memo((props) => {
   const { detail, time, onChangeDetailValue, onChangeTimeValue, onClickRegistration, isCheckValue, error } = props;
+  console.log('Inputformがレンダリングされたよ');
 
   return (
     <form className="from">
@@ -29,4 +32,4 @@ export const Inputform = (props) => {
       </button>
     </form>
   );
-};
+});
