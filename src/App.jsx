@@ -43,7 +43,6 @@ export const App = () => {
     setIsLoading(false);
   };
 
-  // ここ質問したい。
   const onClickDeleteRecord = async (recordId) => {
     setRecords((prev) => prev.filter((r) => r.id !== recordId));
 
