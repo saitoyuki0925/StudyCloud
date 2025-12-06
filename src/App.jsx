@@ -27,7 +27,6 @@ export const App = () => {
     const timeNum = Number(time);
     const newRecord = await addStudyLog(detail, timeNum);
     setRecords((prev) => [...prev, newRecord]);
-
     setDetail('');
     setTime('');
     setTotalTime(parseInt(totalTime) + parseInt(timeNum));
@@ -36,10 +35,8 @@ export const App = () => {
   const getStudyLog = async () => {
     const studyLogs = await getAllStudyLog();
     setRecords(studyLogs);
-
     const sum = studyLogs.reduce((acc, record) => acc + parseInt(record.time || 0), 0);
     setTotalTime(sum);
-
     setIsLoading(false);
   };
 
